@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cerebro Interactivo</title>
+  <!-- Cargamos la librería p5.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+  <style>
+    body {
+      margin: 0;
+      background-color: #333;
+      color: #fff;
+      font-family: Arial, sans-serif;
+    }
+  </style>
+</head>
+<body>
+<script>
+  let brainImg;
+  let regions = [];
+  let selectedRegion = null;
+  let offsetX, offsetY;
+
+  // Precarga la imagen del cerebro
+  function preload() {
+    brainImg = loadImage("https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Brain_lobes.svg/512px-Brain_lobes.svg.png");
+  }
+
+  function setup() {
+    createCanvas(windowWidth, windowHeight);
+    offsetX = (width - brainImg.width) / 2;
+    offsetY = (height - brainImg.height) / 2;
+
+    // Define las regiones (valores aproximados)
+    regions = [
+      { 
+        name: "Lóbulo Frontal", 
+        x: offsetX + 20, y: offsetY + 60, 
+        w: 120, h: 150, 
+        info: "Funciones: planificación, toma de decisiones, control del movimiento, resolución de problemas y personalidad."
+      },
+      { 
+        name: "Lóbulo Parietal", 
+        x: offsetX + 140, y: offsetY + 20, 
+        w: 100, h: 100, 
+        info: "Funciones: procesamiento de información sensorial, percepción espacial y orientación."
+      },
+      { 
+        name: "Lóbulo Temporal", 
+        x: offsetX + 140, y: offsetY + 140, 
+        w: 120, h: 120, 
+        info: "Funciones: audición, memoria, procesamiento del lenguaje y reconocimiento de objetos y rostros."
+      },
+      { 
+        name: "Lóbulo Occipital", 
+        x: offsetX + 260, y: offsetY + 60, 
+        w: 100, h: 100, 
+        info: "Funciones: procesamiento e interpretación de la información visual."
+      }
+    ];
+  }
+
+  function draw() {
+    background(50);
+    image(brainImg, offsetX, offsetY);
+
+    // Resalta la región sobre la que pasa el mouse
+    let hovered = null;
+    for (let region of regions) {
+      if (mouseX > region.x && mouseX < region.x + region.w &&
+          mouseY > region.y && mouseY < region.y + region.h) {
+        hovered = region;
+        break;
+      }
+    }
+    
+    if (hovered) {
+      noFill();
+      stroke(255, 0, 0);
+      strokeWeight(3);
+      rect(hovered.x, hovered.y, hovered.w, hovered.h);
+    }
+    
+    // Muestra la información de la región seleccionada
+    if (selectedRegion) {
+      fill(255);
+      noStroke();
+      rect(20, height - 140, width - 40, 120, 10);
+      fill(0);
+      textSize(18);
+      textStyle(BOLD);
+      text(selectedRegion.name, 40, height - 110);
+      textStyle(NORMAL);
+      textSize(16);
+      text(selectedRegion.info, 40, height - 80, width - 80, 80);
+    }
+  }
+
+  // Selecciona la región al hacer clic o limpia la selección
+  function mouseClicked() {
+    let found = false;
+    for (let region of regions) {
+      if (mouseX > region.x && mouseX < region.x + region.w &&
+          mouseY > region.y && mouseY < region.y + region.h) {
+        selectedRegion = region;
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      selectedRegion = null;
+    }
+  }
+
+  function windowResized() {
+    resizeCanvas(windowWidth, windowHeight);
+    offsetX = (width - brainImg.width) / 2;
+    offsetY = (height - brainImg.height) / 2;
+    
+    // Actualiza la posición de las regiones
+    regions[0].x = offsetX + 20;
+    regions[0].y = offsetY + 60;
+    regions[1].x = offsetX + 140;
+    regions[1].y = offsetY + 20;
+    regions[2].x = offsetX + 140;
+    regions[2].y = offsetY + 140;
+    regions[3].x = offsetX + 260;
+    regions[3].y = offsetY + 60;
+  }
+</script>
+</body>
+</html>
